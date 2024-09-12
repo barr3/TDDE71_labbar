@@ -4,7 +4,7 @@ class Time
 {
     public:
         Time();
-        Time(unsigned int hour, unsigned int minute, unsigned int second, unsigned int millisecond = 0);
+        Time(unsigned int hour, unsigned int minute, unsigned int second);
         Time(std::string time);
         std::string to_string(std::string format = "24h") const;
         bool is_am() const;
@@ -23,11 +23,9 @@ class Time
         unsigned int hour;
         unsigned int minute;
         unsigned int second;
-        unsigned int millisecond;
         unsigned int calculate_seconds(unsigned int hour, unsigned int minute, unsigned int second) const;
         void throw_if_invalid_time() const;
         void add_num_to_ss(std::stringstream &ss, int num) const;
-        void add_millisecond_to_ss(std::stringstream &ss, int num) const;
         std::string to_string_24h() const;
         std::string to_string_12h() const;
 };
