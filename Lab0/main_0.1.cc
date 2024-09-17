@@ -1,19 +1,6 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-// Information om komplettering:
-//   Kompletteringen kan gälla hela filen och alla filer i labben,
-//   så får ni komplettering på en sak, kan samma sak förekomma på
-//   fler ställen utan att jag skrivit det.
-//
-//   Komplettering lämnas in via sendlab efter senast en (1) vecka.
-//
-//   Har ni frågor om kompletteringen kan ni maila mig på:
-//   nils.jakobsson@liu.se
-
-// Komplettering: Upprepa inte strömmanipulatorer som gäller tills vidare.
-
-// Kommentar: Att köra flera endl i rad är onödigt då vi flushar en tom buffer. Använd istället \n för att infoga en nyrad.
 
 int main() {
     int int_number {};

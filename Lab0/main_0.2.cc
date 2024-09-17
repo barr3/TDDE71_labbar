@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -13,8 +12,8 @@ struct Result {
     int seconds;
 };
 
-bool operator>(Result lhs, Result rhs);
-std::vector<Result> read_file_to_vec(std::ifstream & ifs);
+bool operator>(Result const &lhs, Result const &rhs);
+std::vector<Result> read_file_to_vec(std::ifstream &ifs);
 std::string format_number(int num);
 void print_results(std::vector<Result> const &results, int line_count);
 void sort_results(std::vector<Result> &results);
@@ -35,10 +34,10 @@ int main()
 }
 
 // Allows comparing Result-objects
-bool operator>(Result lhs, Result rhs)
+bool operator>(Result const &lhs, Result const &rhs)
 {
-    int lhs_total_seconds = lhs.hours * 3600 + lhs.minutes * 60 + lhs.seconds;
-    int rhs_total_seconds = rhs.hours * 3600 + rhs.minutes * 60 + rhs.seconds;
+    int lhs_total_seconds { lhs.hours * 3600 + lhs.minutes * 60 + lhs.seconds };
+    int rhs_total_seconds { rhs.hours * 3600 + rhs.minutes * 60 + rhs.seconds };
     return lhs_total_seconds > rhs_total_seconds;
 }
 
@@ -46,20 +45,21 @@ std::ifstream get_file_from_user()
 {
     std::string file_name {};
     std::ifstream ifs {};
-    while (true)
+
+    do
     {
         std::cout << "Ange filnamn: " << std::flush;
         std::cin >> file_name;
         
-        // Checks if the file 'file_name' could be opened
         ifs.open(file_name);
-        if (!ifs.fail())
+
+        // Checks if the file 'file_name' could be opened
+        if (ifs.fail())
         {
-            break;
+            std::cout << "FEL: Filen gick inte att öppna!" << std::endl;
         }
 
-        std::cout << "FEL: Filen gick inte att öppna!" << std::endl;
-    }
+    } while (!ifs.is_open());
 
     return ifs;
 }
@@ -67,7 +67,8 @@ std::ifstream get_file_from_user()
 int get_line_count_from_user(int max_line_count)
 {
     int line_count {};
-    while (true)
+    bool got_valid_line_count { false };
+    while (!got_valid_line_count)
     {
         std::cout << "Ange antal rader: " << std::flush;
         // Take input and make sure it is valid
@@ -83,7 +84,7 @@ int get_line_count_from_user(int max_line_count)
         }
         else 
         {
-            break;
+            got_valid_line_count = true;
         }
     }
 
@@ -91,7 +92,7 @@ int get_line_count_from_user(int max_line_count)
 }
 
 // Creates a Result object for each line and collects them in a vector
-std::vector<Result> read_file_to_vec(std::ifstream & ifs) 
+std::vector<Result> read_file_to_vec(std::ifstream &ifs) 
 {
     std::string line {};
     std::vector<Result> results {};
@@ -116,7 +117,7 @@ std::vector<Result> read_file_to_vec(std::ifstream & ifs)
 std::string format_number(int num)
 {
     std::ostringstream number_string {};
-    if(num <10)
+    if (num <10)
     {
         number_string << "0" << num;
     }
@@ -134,9 +135,9 @@ void print_results(std::vector<Result> const &results, int line_count)
     std::cout << "====================" << std::endl;
     for (int i = 0; i < line_count; i++)
     {
-        std::string hours   = format_number(results[i].hours);
-        std::string minutes = format_number(results[i].minutes);
-        std::string seconds = format_number(results[i].seconds);
+        std::string hours   { format_number(results[i].hours)   };
+        std::string minutes { format_number(results[i].minutes) };
+        std::string seconds { format_number(results[i].seconds) };
 
         std::cout << std::setw(9) << std::right << results[i].name << std::flush; 
         std::cout << " | " << hours << ":" << minutes << ":" << seconds << std::endl;
