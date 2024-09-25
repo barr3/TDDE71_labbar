@@ -2,8 +2,36 @@
 #include <iostream>
 #include <sstream>
 
-List::List() : head{nullptr}, tail{nullptr}
+List::List()
+    : head{nullptr}, tail{nullptr}
 {
+}
+
+List::List(List const &other)
+    : head{clone(other.head)}, tail{nullptr}
+{
+    unsigned int len {length()};
+
+    if (len != 0)
+    {
+        tail = get_node(len - 1);
+        tail->next = nullptr;
+    }
+}
+
+List::List(List &&other)
+    : head{other.head}, tail{other.tail}
+{
+    other.head = nullptr;
+    other.tail = nullptr;
+}
+
+List& List::operator=(List const &other)
+{
+    List temp {other};
+    std::swap(temp.head, head);
+    std::swap(temp.tail, tail);
+    return *this;
 }
 
 List::~List()
@@ -13,7 +41,6 @@ List::~List()
         pop_front();
     }
 }
-
 
 void List::insert_front(int value)
 {
@@ -57,7 +84,7 @@ void List::pop_front()
 
 void List::pop_back()
 {
-    int len {length()};
+    unsigned int len {length()};
     if (len > 1)
     {
         Node* previous = get_node(len-2);
@@ -84,7 +111,7 @@ std::string List::to_string() const
     Node* current {head};
     ss << "[";
 
-    for (int i { 0 }; i < length(); i++)
+    for (unsigned int i { 0 }; i < length(); i++)
     {
         ss << current->data;
         if (i < length() - 1)
@@ -98,6 +125,31 @@ std::string List::to_string() const
     return ss.str();
 }
 
+int List::front() const
+{
+    if (!is_empty())
+    {
+        return head->data;    
+    }
+    else
+    {
+        throw std::logic_error("Cannot get value from empty list");
+    }
+    
+}
+
+int List::back() const
+{
+    if (!is_empty())
+    {
+        return tail->data;    
+    }
+    else
+    {
+        throw std::logic_error("Cannot get value from empty list");
+    }
+    
+}
 
 int List::get(unsigned int index) const 
 {
@@ -110,6 +162,15 @@ int List::get(unsigned int index) const
     // return current->data;
 
     return get_node(index)->data;
+}
+
+void List::clear()
+{
+    while (!is_empty())
+    {
+        pop_front();
+    }
+    
 }
 
 unsigned int List::length() const
@@ -128,7 +189,7 @@ unsigned int List::length() const
 List::Node* List::get_node(unsigned int index) const 
 {
     Node* current { head };
-    for (int i { 0 }; i < index; i++)
+    for (unsigned int i { 0 }; i < index; i++)
     {
         if (current == nullptr)
         {
@@ -138,4 +199,13 @@ List::Node* List::get_node(unsigned int index) const
     }
 
     return current;
+}
+
+List::Node* List::clone(List::Node* node)
+{
+    if (node == nullptr)
+    {
+        return nullptr;
+    }
+    return new Node{node->data, clone(node->next)};
 }

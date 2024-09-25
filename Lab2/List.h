@@ -7,7 +7,11 @@ class List
 {
 public:
         List();
+        List(List const &other);
+        List(List &&other);
+        List& operator=(List const &other);
         ~List();
+
         void insert_front(int value);
         void push_back(int value);
         void pop_front();
@@ -34,6 +38,7 @@ private:
     Node* tail;
 
     Node* get_node(unsigned int index) const;
+    Node* clone(Node* node);
 };
 
 #endif

@@ -20,6 +20,9 @@ TEST_CASE("Insert and get")
         CHECK(l1.get(1) == 2);
         CHECK(l1.get(2) == 3);
         CHECK(l1.get(3) == 4);
+
+        CHECK_THROWS(l1.get(1999)); 
+        CHECK_THROWS(l1.get(-1));
     }
 
     SECTION("Insert front")
@@ -75,8 +78,7 @@ TEST_CASE("Insert and get")
         CHECK(l1.get(1) == 2);
         CHECK(l1.get(2) == 3);
 
-        CHECK_THROWS(l1.get(1999)); 
-        CHECK_THROWS(l1.get(-1));
+
     }
 
     SECTION("To string")
@@ -96,6 +98,39 @@ TEST_CASE("Insert and get")
         CHECK(l2.to_string() == "[5]");
         CHECK(l3.to_string() == "[]");
 
+    }
+
+    SECTION("Front and back")
+    {
+        List l1 { };
+        List l2 { };
+        List l3 { };
+        l1.push_back(1);
+        l1.push_back(2);
+        l1.push_back(3);
+        l1.push_back(4);
+        l3.push_back(8);
+        
+        CHECK(l1.front() == 1);
+        CHECK(l1.back() == 4);
+        CHECK_THROWS(l2.front());
+        CHECK(l3.front() == 8);
+        CHECK(l3.back() == 8);
+        CHECK(l3.front() == l3.back());
+    }
+
+    SECTION("Special constructors")
+    {
+        List l1 {};
+        l1.push_back(1);
+        List l2 {l1};
+        List l3 {};
+        List l4 {l3};
+
+        CHECK(l1.to_string() == l2.to_string());
+        CHECK(l3.to_string() == l4.to_string());
+        l3 = l1;
+        CHECK(l1.to_string() == l3.to_string());
     }
 
 }
