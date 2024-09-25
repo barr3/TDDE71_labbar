@@ -1,34 +1,70 @@
 #include <sstream>
 #include <string>
 #include "Time.h"
+#include <sstream>
 
 Time::Time()
     : hour{0}, minute{0}, second{0}, millisecond{0}
 {
 }
 
-Time::Time(unsigned int hour, unsigned int minute, unsigned int second, unsigned int millisecond)
+Time::Time(unsigned int hour, 
+           unsigned int minute, 
+           unsigned int second, 
+           unsigned int millisecond)
     : hour{hour}, minute{minute}, second{second}, millisecond{millisecond}
 {
     throw_if_invalid_time();
 }
 
-// Assumes input is in format hh::mm::ss
-Time::Time(std::string time)
-    : hour{}, minute{}, second{}
+Time::Time(std::string const &time)
+    : hour{}, minute{}, second{}, millisecond{}
 {
     std::stringstream ss{time};
-    ss >> hour;
-    // Ignore ':'
-    ss.ignore(1);
-    ss >> minute;
-    ss.ignore(1);
-    ss >> second;
+
+    //Checks that string is input in correct format
+    if (!(ss >> hour)) 
+    {
+        throw std::runtime_error("Invalid time string!");
+    }
+    if (ss.get() != ':') 
+    {
+        throw std::runtime_error("Invalid time string!");
+    }
+    if (!(ss >> minute)) 
+    {
+        throw std::runtime_error("Invalid time string!");
+    }
+    if (ss.get() != ':') 
+    {
+        throw std::runtime_error("Invalid time string!");
+    }
+    if (!(ss >> second)) 
+    {
+        throw std::runtime_error("Invalid time string!");
+    }
+
+    char next {};
+    ss.get(next);
+    if (!ss.fail()) 
+    {
+        if (next == '.') 
+        {
+            if (!(ss >> millisecond)) 
+            {
+                throw std::runtime_error("Invalid time string!");
+            }
+        }
+        else 
+        {
+            throw std::runtime_error("Invalid time string!");
+        }
+    }
 
     throw_if_invalid_time();
 }
 
-std::string Time::to_string(std::string format) const
+std::string Time::to_string(std::string const &format) const
 {
     if (format == "24h")
     {
@@ -49,49 +85,119 @@ bool Time::is_am() const
     return hour < 12;
 }
 
-unsigned int Time::get_hour()
+unsigned int Time::get_hour() const
 {
     return hour;
 }
 
-unsigned int Time::get_minute()
+unsigned int Time::get_minute() const
 {
     return minute;
 }
 
-unsigned int Time::get_second()
+unsigned int Time::get_second() const
 {
     return second;
 }
 
+unsigned int Time::get_millisecond() const
+{
+    return millisecond;
+}
+
 bool Time::operator>(Time const &rhs) const
 {
-    return calculate_seconds(hour, minute, second) > calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+    return calculate_seconds(hour, minute, second)  
+         > calculate_seconds(rhs.hour, rhs.minute, rhs.second);
 }
 
 bool Time::operator<(Time const &rhs) const
 {
-    return calculate_seconds(hour, minute, second) < calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+    return calculate_seconds(hour, minute, second)
+         < calculate_seconds(rhs.hour, rhs.minute, rhs.second);
 }
 
 bool Time::operator<=(Time const &rhs) const
 {
-    return calculate_seconds(hour, minute, second) <= calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+    return calculate_seconds(hour, minute, second) 
+        <= calculate_seconds(rhs.hour, rhs.minute, rhs.second);
 }
 
 bool Time::operator>=(Time const &rhs) const
 {
-    return calculate_seconds(hour, minute, second) >= calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+    return calculate_seconds(hour, minute, second)
+        >= calculate_seconds(rhs.hour, rhs.minute, rhs.second);
 }
 
 bool Time::operator==(Time const &rhs) const
 {
-    return calculate_seconds(hour, minute, second) == calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+    return calculate_seconds(hour, minute, second)
+        == calculate_seconds(rhs.hour, rhs.minute, rhs.second);
 }
 
 bool Time::operator!=(Time const &rhs) const
 {
-    return calculate_seconds(hour, minute, second) != calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+    return calculate_seconds(hour, minute, second)
+        != calculate_seconds(rhs.hour, rhs.minute, rhs.second);
+}
+
+double Time::operator-(Time const &rhs) const
+{
+    double lhs_seconds {};
+    double rhs_seconds {}; 
+
+    lhs_seconds = hour*3600.0 
+                + minute 
+                * 60.0
+                + second 
+                + millisecond 
+                / 1000.0;
+    rhs_seconds = rhs.hour 
+                * 3600.0 
+                + rhs.minute 
+                * 60.0
+                + rhs.second 
+                + rhs.millisecond 
+                / 1000.0;
+
+    return lhs_seconds - rhs_seconds;
+}
+
+Time& Time::operator++()
+{
+    if (second == 59)
+    {
+        second = 0;
+        if (minute == 59)
+        {
+            minute = 0;
+            if (hour == 23)
+            {
+                hour = 0;
+            }
+            else
+            {
+                hour++;
+            }
+        }
+        else
+        {
+            minute++;
+        }
+    }
+    else
+    {
+        second++;
+    }
+    
+    return *this;
+}
+
+Time Time::operator++(int)
+{
+    Time temp = *this;
+    ++*this;
+    return temp;
 }
 
 unsigned int Time::calculate_seconds(

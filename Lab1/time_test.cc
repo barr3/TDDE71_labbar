@@ -1,8 +1,16 @@
 #include <sstream>
 #include "catch.hpp"
 #include "Time.h"
+#include <limits>
+#include <cmath>
 
 using namespace std;
+
+
+bool compare_equal(double a, double b)
+{
+   return std::abs(a - b) <= 0.001;
+}
 
 TEST_CASE("Constructors and getters")
 {
@@ -136,9 +144,15 @@ TEST_CASE("Milliseconds")
    Time t3{13, 43, 23, 300};
    Time t4{4, 45, 23, 32};
    Time t5{4, 45, 23, 4};
+   Time t6{4, 45, 24, 4};
 
    SECTION("to_string")
    {
+      CHECK_THROWS(Time {"1:b"});
+      CHECK_THROWS(Time {"1:1899:49.111"});
+      CHECK_THROWS(Time {"12:a:1"});
+      CHECK_THROWS(Time {"12b2:1:1.1"});
+      CHECK_THROWS(Time {"12:1:1:41"});
       CHECK(t0.to_string() == "00:00:00");
       CHECK(t1.to_string() == "12:00:00");
       CHECK(t2.to_string() == "12:00:00");
@@ -146,7 +160,67 @@ TEST_CASE("Milliseconds")
       CHECK(t3.to_string("12h") == "01:43:23.300pm");
       CHECK(t4.to_string() == "04:45:23.032");
       CHECK(t5.to_string() == "04:45:23.004");
+
+      CHECK(t4.get_millisecond() == 32);
+      CHECK(t3.get_millisecond() == 300);
    }
+
+   SECTION("operator-")
+   {
+      CHECK( compare_equal(t4-t5, 0.028));
+      CHECK( compare_equal(t5-t4, -0.028));
+      CHECK(t6-t5 == 1);
+   }
+}
+
+TEST_CASE("Increment operator")
+{
+   SECTION("Postfix increment")
+   {
+
+      Time t0 {12,0, 0};
+      Time t1 {23, 59, 59};
+      Time t2 {7,4,59};
+      Time t3 {9, 59, 23};
+      Time t4 {4, 5, 6, 300};
+      Time t5 {2, 4, 59, 300};
+
+      CHECK( t0++.to_string() == "12:00:00");
+      CHECK( t0.to_string() == "12:00:01");
+      CHECK( t1++.to_string() == "23:59:59");
+      CHECK( t1.to_string() == "00:00:00");
+      CHECK( t2++.to_string() == "07:04:59");
+      CHECK( t2.to_string() == "07:05:00");
+      CHECK( t3++.to_string() == "09:59:23");
+      CHECK( t3.to_string() == "09:59:24");
+      CHECK( t4++.to_string() == "04:05:06.300");
+      CHECK( t4.to_string() == "04:05:07.300");
+      CHECK( t5++.to_string() == "02:04:59.300");
+      CHECK( t5.to_string() == "02:05:00.300");
+      CHECK( t2 - (t2++) == 1.0);
+
+   }
+
+   SECTION("Postfix increment")
+   {
+
+      Time t0 {12,0, 0};
+      Time t1 {23, 59, 59};
+      Time t2 {7,4,59};
+      Time t3 {9, 59, 23};
+      Time t4 {4, 5, 6, 300};
+      Time t5 {2, 4, 59, 300};
+
+      CHECK( (++t0).to_string() == "12:00:01");
+      CHECK( (++t1).to_string() == "00:00:00");
+      CHECK( (++t2).to_string() == "07:05:00");
+      CHECK( (++t3).to_string() == "09:59:24");
+      CHECK( (++t4).to_string() == "04:05:07.300");
+      CHECK( (++t5).to_string() == "02:05:00.300");
+      CHECK( t2 - (++t2) == 0);
+
+   }
+   
 }
 
 // Fill with more tests of other functions and operators!
