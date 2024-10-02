@@ -7,6 +7,7 @@ List::List()
 {
 }
 
+// Copy constructor
 List::List(List const &other)
     : head{clone(other.head)}, tail{nullptr}
 {
@@ -19,6 +20,7 @@ List::List(List const &other)
     }
 }
 
+// Move constructor
 List::List(List &&other)
     : head{other.head}, tail{other.tail}
 {
@@ -26,11 +28,20 @@ List::List(List &&other)
     other.tail = nullptr;
 }
 
+// Copy assignment operator
 List& List::operator=(List const &other)
 {
-    List temp {other};
+    List temp { other };
     std::swap(temp.head, head);
     std::swap(temp.tail, tail);
+    return *this;
+}
+
+// Move assignment operator
+List& List::operator=(List &&other)
+{
+    std::swap(other.head, head);
+    std::swap(other.tail, tail);
     return *this;
 }
 
@@ -45,8 +56,6 @@ List::~List()
 void List::insert_front(int value)
 {
     Node* new_head { new Node {value, head} };
-    // new_head->next = head;
-    // new_head->data = value;
     if (is_empty()) 
     {
         tail = new_head;
@@ -57,9 +66,7 @@ void List::insert_front(int value)
 
 void List::push_back(int value)
 {
-    Node* new_tail { new Node {value, nullptr}};
-    // new_tail->next = nullptr;
-    // new_tail->data = value;
+    Node* new_tail { new Node { value, nullptr } };
     if (is_empty())
     {
         tail = new_tail;        
@@ -84,7 +91,7 @@ void List::pop_front()
 
 void List::pop_back()
 {
-    unsigned int len {length()};
+    unsigned int len { length() };
     if (len > 1)
     {
         Node* previous = get_node(len-2);
@@ -100,6 +107,98 @@ void List::pop_back()
     }
 }
 
+void List::sort() 
+{
+    bool has_swapped {head != nullptr};
+    while (has_swapped)
+    {
+        has_swapped = false;
+        Node* current { head };
+        Node* next { current->next };
+        Node* previous { nullptr };
+
+        while (next != nullptr)
+        {
+            if (current->data > next->data)
+            {
+                has_swapped = true;
+                
+                if (current == head)
+                {
+                    head = next;
+                    Node* temp {next->next};
+                    next->next = current;
+                    current->next = temp;
+                    current = head;
+                }
+                else
+                {
+                    previous->next = current->next;
+                    current->next = next->next;
+                    next->next = current;
+                    current = next;
+                }
+
+            }
+
+            previous = current;
+            current = current->next;
+            next = current->next;
+        }
+    }
+}
+
+void List::clear()
+{
+    while (!is_empty())
+    {
+        pop_front();
+    }
+    
+}
+
+int List::get(unsigned int index) const 
+{
+    return get_node(index)->data;
+}
+
+int List::front() const
+{
+    if (!is_empty())
+    {
+        return head->data;    
+    }
+    else
+    {
+        throw std::logic_error("Cannot get front value of empty list");
+    }
+}
+
+int List::back() const
+{
+    if (!is_empty())
+    {
+        return tail->data;    
+    }
+    else
+    {
+        throw std::logic_error("Cannot get back value of empty list");
+    }
+}
+
+unsigned int List::length() const
+{
+    Node* current { head };
+    int len { 0 };
+    while (current != nullptr)
+    {
+        current = current->next;
+        len++;
+    }
+
+    return len;
+}
+
 bool List::is_empty() const
 {
     return head == nullptr;
@@ -107,8 +206,8 @@ bool List::is_empty() const
 
 std::string List::to_string() const
 {
-    std::stringstream ss {};
-    Node* current {head};
+    std::stringstream ss { };
+    Node* current { head };
     ss << "[";
 
     for (unsigned int i { 0 }; i < length(); i++)
@@ -123,67 +222,6 @@ std::string List::to_string() const
     ss << "]";
 
     return ss.str();
-}
-
-int List::front() const
-{
-    if (!is_empty())
-    {
-        return head->data;    
-    }
-    else
-    {
-        throw std::logic_error("Cannot get value from empty list");
-    }
-    
-}
-
-int List::back() const
-{
-    if (!is_empty())
-    {
-        return tail->data;    
-    }
-    else
-    {
-        throw std::logic_error("Cannot get value from empty list");
-    }
-    
-}
-
-int List::get(unsigned int index) const 
-{
-    // Node* current { head };
-    // for (int i { 0 }; i < index; i++)
-    // {
-    //     current = current->next;
-    // }
-
-    // return current->data;
-
-    return get_node(index)->data;
-}
-
-void List::clear()
-{
-    while (!is_empty())
-    {
-        pop_front();
-    }
-    
-}
-
-unsigned int List::length() const
-{
-    Node* current { head };
-    int length {0};
-    while (current != nullptr)
-    {
-        current = current->next;
-        length++;
-    }
-
-    return length;
 }
 
 List::Node* List::get_node(unsigned int index) const 
