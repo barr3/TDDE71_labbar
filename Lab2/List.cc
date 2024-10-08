@@ -222,7 +222,6 @@ List::Node* List::merge_sort(Node* node)
 
     Node* left {merge_sort(node)};
     Node* right {merge_sort(second_half)};
-    std::cout << "hej" << std::endl;
 
     return merge_lists(left, right);
 }
