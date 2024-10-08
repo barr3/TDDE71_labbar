@@ -80,7 +80,11 @@ void List::push_back(int value)
 
 void List::pop_front()
 {
-    if (!is_empty())
+    if (is_empty())
+    {
+        throw std::logic_error("Cannot pop empty list");
+    }
+    else
     {
         Node* next = head->next;
         delete head;
@@ -103,6 +107,10 @@ void List::pop_back()
         delete tail;
         tail = nullptr;
         head = nullptr;
+    }
+    else
+    {
+        throw std::logic_error("Cannot pop empty list");
     }
 }
 
@@ -193,7 +201,7 @@ List::Node* List::get_node(unsigned int index) const
     Node* current { head };
     for (unsigned int i { 0 }; i < index; i++)
     {
-        if (current == nullptr)
+        if (current->next == nullptr)
         {
             throw std::logic_error("index out of range");
         }
