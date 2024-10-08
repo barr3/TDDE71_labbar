@@ -43,7 +43,9 @@ private:
 
     Node* get_node(unsigned int index) const;
     Node* clone(Node* node);
-
+    Node* merge_sort(Node* node);
+    Node* get_middle(Node* node);
+    Node* merge_lists(Node* left, Node* right);
 
 };
 

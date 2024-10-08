@@ -1,5 +1,4 @@
 #include "List.h"
-#include <iostream>
 #include <sstream>
 
 List::List()
@@ -107,46 +106,13 @@ void List::pop_back()
     }
 }
 
-void List::sort() 
+void List::sort()
 {
-    bool has_swapped {head != nullptr};
-    while (has_swapped)
-    {
-        has_swapped = false;
-        Node* current { head };
-        Node* next { current->next };
-        Node* previous { nullptr };
-
-        while (next != nullptr)
-        {
-            if (current->data > next->data)
-            {
-                has_swapped = true;
-                
-                if (current == head)
-                {
-                    head = next;
-                    Node* temp {next->next};
-                    next->next = current;
-                    current->next = temp;
-                    current = head;
-                }
-                else
-                {
-                    previous->next = current->next;
-                    current->next = next->next;
-                    next->next = current;
-                    current = next;
-                }
-
-            }
-
-            previous = current;
-            current = current->next;
-            next = current->next;
-        }
-    }
+    if (is_empty() || head == tail) return;
+    head = merge_sort(head);
 }
+
+
 
 void List::clear()
 {
@@ -159,31 +125,29 @@ void List::clear()
 
 int List::get(unsigned int index) const 
 {
+    if (is_empty())
+    {
+        throw std::logic_error("Cannot get values from empty list");
+    }
     return get_node(index)->data;
 }
 
 int List::front() const
 {
-    if (!is_empty())
-    {
-        return head->data;    
-    }
-    else
+    if (is_empty())
     {
         throw std::logic_error("Cannot get front value of empty list");
     }
+    return head->data;    
 }
 
 int List::back() const
 {
-    if (!is_empty())
-    {
-        return tail->data;    
-    }
-    else
+    if (is_empty())
     {
         throw std::logic_error("Cannot get back value of empty list");
     }
+    return tail->data;    
 }
 
 unsigned int List::length() const
@@ -246,4 +210,50 @@ List::Node* List::clone(List::Node* node)
         return nullptr;
     }
     return new Node{node->data, clone(node->next)};
+}
+
+List::Node* List::merge_sort(Node* node)
+{
+    if (!node || !node->next) return node;
+
+    Node* middle {get_middle(node)};
+    Node* second_half {middle->next};
+    middle->next = nullptr;
+
+    Node* left {merge_sort(node)};
+    Node* right {merge_sort(second_half)};
+    std::cout << "hej" << std::endl;
+
+    return merge_lists(left, right);
+}
+
+List::Node* List::get_middle(Node* node)
+{
+    Node* slow {node};
+    Node* fast {node->next};
+
+    while (fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow;
+}
+
+List::Node* List::merge_lists(Node* left, Node* right)
+{
+    if (!left) return right;
+    if (!right) return left;
+
+    if (left->data < right->data)
+    {
+        left->next = merge_lists(left->next, right);
+        return left;
+    }
+    else 
+    {
+        right->next = merge_lists(left, right->next);
+        return right;
+    }
 }
