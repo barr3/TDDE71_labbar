@@ -43,8 +43,6 @@ private:
 
     Node* get_node(unsigned int index) const;
     Node* clone(Node* node);
-
-
 };
 
 #endif
