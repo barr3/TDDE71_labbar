@@ -2,9 +2,8 @@
 #define OPERAND
 #include "Node.h"
 
-class Operand: private Node
+class Operand : private Node
 {
-
 };
 
 

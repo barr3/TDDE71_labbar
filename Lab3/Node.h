@@ -1,6 +1,5 @@
 #ifndef NODE
 #define NODE
-#include "Operand.h"
 
 class Node
 {
@@ -9,7 +8,8 @@ private:
 	Node *left;
 
 public:
-	virtual double evaluate();
+	virtual double evaluate() = 0;
 };
 
 #endif
+
