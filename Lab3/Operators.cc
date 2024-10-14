@@ -1,5 +1,6 @@
 #include "Operators.h"
 #include <sstream>
+#include <cmath>
 
 Operator::Operator(Node* left, Node* right)
     : left{left}, right{right}
@@ -16,24 +17,29 @@ double Addition::evaluate() const
     return left->evaluate() + right->evaluate();
 }
 
-std::string Addition::prefix() const
+char Addition::get_symbol() const
+{
+    return '+';
+}
+
+std::string Operator::prefix() const
 {
     std::stringstream ss { };
-    ss << "+ " << left->prefix() << " " << right->prefix();
+    ss << get_symbol() << " " << left->prefix() << " " << right->prefix();
     return ss.str();
 }
 
-std::string Addition::infix() const
+std::string Operator::infix() const
 {
     std::stringstream ss { };
-    ss << "( " << left->infix() << " + " << right->infix() << " )";
+    ss << "( " << left->infix() << " " << get_symbol() << " " << right->infix() << " )";
     return ss.str();
 }
 
-std::string Addition::postfix() const
+std::string Operator::postfix() const
 {
     std::stringstream ss { };
-    ss << left->postfix() << " " << right->postfix() << " +";
+    ss << left->postfix() << " " << right->postfix() << " " << get_symbol();
     return ss.str();
 }
 
@@ -47,25 +53,9 @@ double Subtraction::evaluate() const
     return left->evaluate() - right->evaluate();
 }
 
-std::string Subtraction::prefix() const
+char Subtraction::get_symbol() const
 {
-    std::stringstream ss { };
-    ss << "- " << left->prefix() << " " << right->prefix();
-    return ss.str();
-}
-
-std::string Subtraction::infix() const
-{
-    std::stringstream ss { };
-    ss << "( " << left->infix() << " - " << right->infix() << " )";
-    return ss.str();
-}
-
-std::string Subtraction::postfix() const
-{
-    std::stringstream ss { };
-    ss << left->postfix() << " " << right->postfix() << " -";
-    return ss.str();
+    return '-';
 }
 
 
@@ -79,26 +69,11 @@ double Multiplication::evaluate() const
     return left->evaluate() * right->evaluate();
 }
 
-std::string Multiplication::prefix() const
+char Multiplication::get_symbol() const
 {
-    std::stringstream ss { };
-    ss << "* " << left->prefix() << " " << right->prefix();
-    return ss.str();
+    return '*';
 }
 
-std::string Multiplication::infix() const
-{
-    std::stringstream ss { };
-    ss << "( " << left->infix() << " * " << right->infix() << " )";
-    return ss.str();
-}
-
-std::string Multiplication::postfix() const
-{
-    std::stringstream ss { };
-    ss << left->postfix() << " " << right->postfix() << " *";
-    return ss.str();
-}
 
 
 Division::Division(Node* left, Node* right)
@@ -108,26 +83,47 @@ Division::Division(Node* left, Node* right)
 
 double Division::evaluate() const
 {
-    return left->evaluate() * right->evaluate();
+    double right_value { right->evaluate()};
+    if (fmod(right_value, 1.0) == 0.0 
+                && static_cast<int>(right_value) == 0)
+    {
+        throw std::logic_error("Division by zero");
+    }
+
+    return left->evaluate() / right->evaluate();
 }
 
-std::string Division::prefix() const
+char Division::get_symbol() const
 {
-    std::stringstream ss { };
-    ss << "/ " << left->prefix() << " " << right->prefix();
-    return ss.str();
+    return '/';
 }
 
-std::string Division::infix() const
+Exponentiation::Exponentiation(Node* left, Node* right)
+    : Operator{left, right}
 {
-    std::stringstream ss { };
-    ss << "( " << left->infix() << " / " << right->infix() << " )";
-    return ss.str();
 }
 
-std::string Division::postfix() const
+double Exponentiation::evaluate() const
 {
-    std::stringstream ss { };
-    ss << left->postfix() << " " << right->postfix() << " /";
-    return ss.str();
+    double left_value { left->evaluate() };
+    double right_value { right->evaluate()};
+
+    if ( fmod(left_value, 1.0) == 0.0 
+                && static_cast<int>(left_value) == 0 
+                && right_value <= 0)
+    {
+        throw std::logic_error("Invalid exponentiation");
+    }
+    else if ( left_value < 0 && fmod(right_value, 1.0) != 0.0 )
+    {
+        throw std::logic_error("Invalid exponentiation");
+    }
+
+    return pow(left_value,  right_value);
 }
+
+char Exponentiation::get_symbol() const
+{
+    return '^';
+}
+

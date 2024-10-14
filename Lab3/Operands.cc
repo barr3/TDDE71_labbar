@@ -2,6 +2,7 @@
 #include <sstream>
 #include <iomanip>
 
+
 Real::Real(double value) : value{value}
 {
 }
