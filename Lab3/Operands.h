@@ -1,5 +1,6 @@
-#ifndef OPERAND
-#define OPERAND
+#ifndef OPERANDS
+#define OPERANDS
+
 #include "Node.h"
 
 class Operand : public Node

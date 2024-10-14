@@ -1,5 +1,6 @@
-#ifndef OPERATOR
-#define OPERATOR
+#ifndef OPERATORS
+#define OPERATORS
+
 #include "Node.h"
 
 class Operator : public Node

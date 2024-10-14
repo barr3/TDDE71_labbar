@@ -3,22 +3,22 @@
 #include "Operands.h"
 #include <stack>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <cmath>
 
 Expression::Expression(std::string const &expression)
 {
-    std::stack<Node *> stack{};
-    std::istringstream iss{expression};
-    std::string element;
+    std::stack<Node*> stack { };
+    std::istringstream iss{ expression };
+    std::string element { };
 
     while (iss >> element)
     {
         try
         {
-            double d{std::stod(element)};
+            double d { std::stod(element) };
 
-            // Check if element is integer or real
             if (std::fmod(d, 1.0) == 0.0)
             {
                 // Is integer
@@ -27,11 +27,16 @@ Expression::Expression(std::string const &expression)
             else
             {
                 // Is real
-                stack.push(new Real{d});
+                stack.push(new Real { d } );
             }
         }
         catch (std::exception e)
         {
+            if (stack.size() < 2)
+            {
+                throw std::logic_error("Missing operands for operator");
+            }
+
             if (element == "+")
             {
                 Node *first{stack.top()};
@@ -39,7 +44,7 @@ Expression::Expression(std::string const &expression)
                 Node *second{stack.top()};
                 stack.pop();
 
-                stack.push(new Addition{first, second});
+                stack.push(new Addition{second, first});
             }
             else if (element == "-")
             {
@@ -48,15 +53,70 @@ Expression::Expression(std::string const &expression)
                 Node *second{stack.top()};
                 stack.pop();
 
-                stack.push(new Subtraction{first, second});
+                stack.push(new Subtraction{second, first});
+            }
+            else if (element == "*")
+            {
+                Node *first{stack.top()};
+                stack.pop();
+                Node *second{stack.top()};
+                stack.pop();
+
+                stack.push(new Multiplication{second, first});
+            }
+            else if (element == "/")
+            {
+                Node *first{stack.top()};
+                stack.pop();
+                Node *second{stack.top()};
+                stack.pop();
+
+                stack.push(new Division{second, first});
+            }
+            else if (element == "^")
+            {
+                Node *first{stack.top()};
+                stack.pop();
+                Node *second{stack.top()};
+                stack.pop();
+
+                stack.push(new Exponentiation{second, first});
+            }
+            else 
+            {
+                throw std::logic_error("Invalid character in expression");
             }
         }
-
-        root = stack.top();
     }
+
+    if (stack.size() > 1)
+    {
+        throw std::logic_error("Missing operator");
+    }
+    else if (stack.size() == 0)
+    {
+        throw std::logic_error("Empty expression");
+    }
+
+    root = stack.top();
 }
 
 double Expression::evaluate() const
 {
     return root->evaluate();
+}
+
+std::string Expression::prefix() const 
+{
+    return root->prefix();
+}
+
+std::string Expression::infix() const 
+{
+    return root->infix();
+}
+
+std::string Expression::postfix() const 
+{
+    return root->postfix();
 }

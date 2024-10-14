@@ -5,6 +5,7 @@
 
 Real::Real(double value) : value{value}
 {
+
 }
 
 double Real::evaluate() const
