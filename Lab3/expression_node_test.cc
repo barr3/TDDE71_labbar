@@ -173,6 +173,12 @@ TEST_CASE("conversion to string")
     }
 }
 
+TEST_CASE("Expression")
+{
+    Expression e { "3 4 +" };
+    CHECK(e.evaluate() == 7);
+}
+
 #if 0 // Flytta ned denna rad för att aktivera nästa TEST_CASE
 
 
