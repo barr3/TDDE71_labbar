@@ -3,12 +3,12 @@
 
 #include "Node.h"
 
-class Expression 
+class Expression
 {
-private:
+  private:
     Node* root;
 
-public:
+  public:
     Expression(std::string const& e);
     double evaluate() const;
     std::string prefix() const;

@@ -5,26 +5,26 @@
 
 class Operator : public Node
 {
-protected:
+  protected:
     Node* left;
     Node* right;
 
     virtual char get_symbol() const = 0;
-public:
+
+  public:
     Operator(Node* left, Node* right);
-	Operator(Operator const&) = delete;
-	Operator& operator=(Operator const&) = delete;
+    Operator(Operator const&) = delete;
+    Operator& operator=(Operator const&) = delete;
 
     virtual double evaluate() const = 0;
     virtual std::string prefix() const;
     virtual std::string infix() const;
-	virtual std::string postfix() const;
-
+    virtual std::string postfix() const;
 };
 
 class Addition : public Operator
 {
-public:
+  public:
     Addition(Node* left, Node* right);
     double evaluate() const;
     // std::string prefix() const;
@@ -32,12 +32,11 @@ public:
     // std::string postfix() const;
 
     char get_symbol() const;
-
 };
 
 class Subtraction : public Operator
 {
-public:
+  public:
     Subtraction(Node* left, Node* right);
     double evaluate() const;
     // std::string prefix() const;
@@ -45,12 +44,11 @@ public:
     // std::string postfix() const;
 
     char get_symbol() const;
-
 };
 
 class Multiplication : public Operator
 {
-public:
+  public:
     Multiplication(Node* left, Node* right);
     double evaluate() const;
     // std::string prefix() const;
@@ -62,7 +60,7 @@ public:
 
 class Division : public Operator
 {
-public:
+  public:
     Division(Node* left, Node* right);
     double evaluate() const;
     // std::string prefix() const;
@@ -74,7 +72,7 @@ public:
 
 class Exponentiation : public Operator
 {
-    public:
+  public:
     Exponentiation(Node* left, Node* right);
     double evaluate() const;
     char get_symbol() const;

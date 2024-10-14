@@ -1,21 +1,20 @@
 #include "Operands.h"
-#include <sstream>
 #include <iomanip>
+#include <sstream>
 
-
-Real::Real(double value) : value{value}
+Real::Real(double value)
+  : value{ value }
 {
-
 }
 
 double Real::evaluate() const
 {
-	return value;
+    return value;
 }
 
 std::string Real::prefix() const
 {
-    std::stringstream ss {  };
+    std::stringstream ss{};
     ss << std::fixed << std::setprecision(3) << value;
     return ss.str();
 }
@@ -30,13 +29,14 @@ std::string Real::postfix() const
     return prefix();
 }
 
-Integer::Integer(int value) : value{value}
+Integer::Integer(int value)
+  : value{ value }
 {
 }
 
 double Integer::evaluate() const
 {
-	return value;
+    return value;
 }
 
 std::string Integer::prefix() const
