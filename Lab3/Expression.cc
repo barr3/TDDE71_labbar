@@ -99,6 +99,19 @@ Expression::Expression(std::string const& infix_expression)
     root = stack.top();
 }
 
+// Move constructor
+Expression::Expression(Expression &&other)
+    : root(other.root)
+{
+    other.root = nullptr;
+}
+
+Expression& Expression::operator=(Expression &&other)
+{
+    std::swap(other.root, root);
+    return *this;
+}
+
 double Expression::evaluate() const
 {
     return root->evaluate();
@@ -123,3 +136,19 @@ std::string Expression::postfix() const
 {
     return root->postfix();
 }
+
+// // Move constructor
+// List::List(List &&other)
+//     : head{other.head}, tail{other.tail}
+// {
+//     other.head = nullptr;
+//     other.tail = nullptr;
+// }
+
+// // Move assignment operator
+// List& List::operator=(List &&other)
+// {
+//     std::swap(other.head, head);
+//     std::swap(other.tail, tail);
+//     return *this;
+// }
