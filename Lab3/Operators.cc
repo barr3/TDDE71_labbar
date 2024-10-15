@@ -83,7 +83,8 @@ Division::Division(Node* left, Node* right)
 double Division::evaluate() const
 {
     double right_value{ right->evaluate() };
-    if (fmod(right_value, 1.0) == 0.0 && static_cast<int>(right_value) == 0) {
+    if (fmod(right_value, 1.0) == 0.0 && static_cast<int>(right_value) == 0)
+    {
         throw std::logic_error("Division by zero");
     }
 
@@ -106,9 +107,12 @@ double Exponentiation::evaluate() const
     double right_value{ right->evaluate() };
 
     if (fmod(left_value, 1.0) == 0.0 && static_cast<int>(left_value) == 0 &&
-        right_value <= 0) {
+        right_value <= 0)
+    {
         throw std::logic_error("Invalid exponentiation");
-    } else if (left_value < 0 && fmod(right_value, 1.0) != 0.0) {
+    }
+    else if (left_value < 0 && fmod(right_value, 1.0) != 0.0)
+    {
         throw std::logic_error("Invalid exponentiation");
     }
 
