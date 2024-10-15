@@ -37,7 +37,7 @@ int main()
             }
             catch (std::exception e)
             {
-                std::cout << "Invalid input expression" << std::endl;
+                std::cout << "Invalid expression" << std::endl;
             }
         }
 
