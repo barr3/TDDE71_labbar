@@ -173,24 +173,7 @@ TEST_CASE("conversion to string")
     }
 }
 
-// TEST_CASE("Expression evaluation postfix")
-// {
-//     Expression e1{ "3 4 + " };
-//     Expression e2{ "2 23.000 + 0.500 ^" };
-//     Expression e3{ "3 4 -" };
-//     Expression e4{ "3 4 *" };
-//     Expression e5{ "18 3 /" };
-//     Expression e6{ "10.0 20 /" };
-
-//     CHECK(e1.evaluate() == 7);
-//     CHECK(e2.evaluate() == 5.0);
-//     CHECK(e3.evaluate() == -1);
-//     CHECK(e4.evaluate() == 12);
-//     CHECK(e5.evaluate() == 6);
-//     CHECK(e6.evaluate() == 0.5);
-// }
-
-TEST_CASE("Expression evaluation infix")
+TEST_CASE("Expression evaluation")
 {
     Expression e1{ "3 + 4" };
     Expression e2{ "( 2 + 23.000 ) ^ 0.500" };
@@ -214,6 +197,24 @@ TEST_CASE("Expression errors")
     CHECK_THROWS(Expression{ "3 +" }); // Missing operand
     CHECK_THROWS(Expression{ "4 3" }); // Missing operator
     CHECK_THROWS(Expression{ "" }); // Empty expression
+}
+
+TEST_CASE("Expression massignment operator")
+{
+    Expression e1 { "1 + 1" };
+    Expression e2 = std::move(e1);
+    
+    // e1.evaluate(); // Segmentation violation because e1 was moved
+    CHECK(e2.evaluate() == 2);
+}
+
+TEST_CASE("Expression move constructor")
+{
+    Expression e1{ "1 + 1" };
+    Expression e2{ std::move(e1) };
+
+    // e1.evaluate(); // Segmentation violation because e1 was moved
+    CHECK(e2.evaluate() == 2);
 }
 
 #if 0 // Flytta ned denna rad för att aktivera nästa TEST_CASE

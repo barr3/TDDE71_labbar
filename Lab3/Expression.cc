@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <iostream>
+
 Expression::Expression(std::string const& infix_expression)
 {
     Postfix postfix_expression{ infix_expression };
@@ -106,6 +108,7 @@ Expression::Expression(Expression &&other)
     other.root = nullptr;
 }
 
+// Move assignment operator
 Expression& Expression::operator=(Expression &&other)
 {
     std::swap(other.root, root);
@@ -114,7 +117,7 @@ Expression& Expression::operator=(Expression &&other)
 
 double Expression::evaluate() const
 {
-    return root->evaluate();
+    return get_root()->evaluate();
 }
 
 std::string Expression::to_string() const
@@ -124,31 +127,27 @@ std::string Expression::to_string() const
 
 std::string Expression::prefix() const
 {
-    return root->prefix();
+    return get_root()->prefix();
 }
 
 std::string Expression::infix() const
 {
-    return root->infix();
+    return get_root()->infix();
 }
 
 std::string Expression::postfix() const
 {
-    return root->postfix();
+    return get_root()->postfix();
 }
 
-// // Move constructor
-// List::List(List &&other)
-//     : head{other.head}, tail{other.tail}
-// {
-//     other.head = nullptr;
-//     other.tail = nullptr;
-// }
-
-// // Move assignment operator
-// List& List::operator=(List &&other)
-// {
-//     std::swap(other.head, head);
-//     std::swap(other.tail, tail);
-//     return *this;
-// }
+Node* Expression::get_root() const
+{
+    if (root != nullptr)
+    {
+        return root;
+    }
+    else
+    {
+        throw std::logic_error("Expression root node is nullptr");
+    }
+}

@@ -7,6 +7,7 @@ class Expression
 {
   private:
     Node* root;
+    Node* get_root() const;
 
   public:
     Expression(std::string const& e);
