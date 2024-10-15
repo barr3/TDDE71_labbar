@@ -1,23 +1,25 @@
 #include "Expression.h"
 #include "Operands.h"
 #include "Operators.h"
+#include "postfix.h"
 #include <cmath>
 #include <sstream>
 #include <stack>
 #include <stdexcept>
 #include <string>
 
-Expression::Expression(std::string const& expression)
+Expression::Expression(std::string const& infix_expression)
 {
+    Postfix postfix_expression{ infix_expression };
+    std::istringstream iss{ postfix_expression.to_string() };
     std::stack<Node*> stack{};
-    std::istringstream iss{ expression };
-    std::string element{};
+    std::string current_element{};
 
-    while (iss >> element)
+    while (iss >> current_element)
     {
         try
         {
-            double d{ std::stod(element) };
+            double d{ std::stod(current_element) };
 
             if (std::fmod(d, 1.0) == 0.0)
             {
@@ -37,7 +39,7 @@ Expression::Expression(std::string const& expression)
                 throw std::logic_error("Missing operands for operator");
             }
 
-            if (element == "+")
+            if (current_element == "+")
             {
                 Node* first{ stack.top() };
                 stack.pop();
@@ -46,7 +48,7 @@ Expression::Expression(std::string const& expression)
 
                 stack.push(new Addition{ second, first });
             }
-            else if (element == "-")
+            else if (current_element == "-")
             {
                 Node* first{ stack.top() };
                 stack.pop();
@@ -55,7 +57,7 @@ Expression::Expression(std::string const& expression)
 
                 stack.push(new Subtraction{ second, first });
             }
-            else if (element == "*")
+            else if (current_element == "*")
             {
                 Node* first{ stack.top() };
                 stack.pop();
@@ -64,7 +66,7 @@ Expression::Expression(std::string const& expression)
 
                 stack.push(new Multiplication{ second, first });
             }
-            else if (element == "/")
+            else if (current_element == "/")
             {
                 Node* first{ stack.top() };
                 stack.pop();
@@ -73,7 +75,7 @@ Expression::Expression(std::string const& expression)
 
                 stack.push(new Division{ second, first });
             }
-            else if (element == "^")
+            else if (current_element == "^")
             {
                 Node* first{ stack.top() };
                 stack.pop();
@@ -93,10 +95,6 @@ Expression::Expression(std::string const& expression)
     {
         throw std::logic_error("Missing operator");
     }
-    else if (stack.size() == 0)
-    {
-        throw std::logic_error("Empty expression");
-    }
 
     root = stack.top();
 }
@@ -104,6 +102,11 @@ Expression::Expression(std::string const& expression)
 double Expression::evaluate() const
 {
     return root->evaluate();
+}
+
+std::string Expression::to_string() const
+{
+    return infix();    
 }
 
 std::string Expression::prefix() const

@@ -11,6 +11,7 @@ class Expression
   public:
     Expression(std::string const& e);
     double evaluate() const;
+    std::string to_string() const;
     std::string prefix() const;
     std::string infix() const;
     std::string postfix() const;
