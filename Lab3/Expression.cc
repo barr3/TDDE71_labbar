@@ -7,14 +7,13 @@
 #include <stack>
 #include <stdexcept>
 #include <string>
-
-#include <iostream>
+#include <memory>
 
 Expression::Expression(std::string const& infix_expression) : root{nullptr}
 {
     Postfix postfix_expression{ infix_expression };
     std::istringstream iss{ postfix_expression.to_string() };
-    std::stack<Node*> stack{};
+    std::stack<std::unique_ptr<Node>> stack{};
     std::string current_element{};
 
     while (iss >> current_element)
@@ -26,12 +25,14 @@ Expression::Expression(std::string const& infix_expression) : root{nullptr}
             if (std::fmod(d, 1.0) == 0.0)
             {
                 // Is integer
-                stack.push(new Integer{ static_cast<int>(d) });
+                stack.push(std::make_unique<Integer>(static_cast<int>(d)));
+                // stack.push(new Integer{ static_cast<int>(d) });
             }
             else
             {
                 // Is real
-                stack.push(new Real{ d });
+                stack.push(std::make_unique<Real>(d));
+                // stack.push(new Real{ d });
             }
         }
         catch (std::exception const& e)
@@ -43,48 +44,48 @@ Expression::Expression(std::string const& infix_expression) : root{nullptr}
 
             if (current_element == "+")
             {
-                Node* first{ stack.top() };
+                std::unique_ptr<Node> first{ std::move(stack.top()) };
                 stack.pop();
-                Node* second{ stack.top() };
+                std::unique_ptr<Node> second{ std::move(stack.top()) };
                 stack.pop();
 
-                stack.push(new Addition{ second, first });
+                stack.push(std::make_unique<Addition>(second.release(), first.release()));
             }
             else if (current_element == "-")
             {
-                Node* first{ stack.top() };
+                std::unique_ptr<Node> first{ std::move(stack.top()) };
                 stack.pop();
-                Node* second{ stack.top() };
+                std::unique_ptr<Node> second{ std::move(stack.top()) };
                 stack.pop();
 
-                stack.push(new Subtraction{ second, first });
+                stack.push(std::make_unique<Subtraction>(second.release(), first.release()));
             }
             else if (current_element == "*")
             {
-                Node* first{ stack.top() };
+                std::unique_ptr<Node> first{ std::move(stack.top()) };
                 stack.pop();
-                Node* second{ stack.top() };
+                std::unique_ptr<Node> second{ std::move(stack.top()) };
                 stack.pop();
 
-                stack.push(new Multiplication{ second, first });
+                stack.push(std::make_unique<Multiplication>(second.release(), first.release()));
             }
             else if (current_element == "/")
             {
-                Node* first{ stack.top() };
+                std::unique_ptr<Node> first{ std::move(stack.top()) };
                 stack.pop();
-                Node* second{ stack.top() };
+                std::unique_ptr<Node> second{ std::move(stack.top()) };
                 stack.pop();
 
-                stack.push(new Division{ second, first });
+                stack.push(std::make_unique<Division>(second.release(), first.release()));
             }
             else if (current_element == "^")
             {
-                Node* first{ stack.top() };
+                std::unique_ptr<Node> first{ std::move(stack.top()) };
                 stack.pop();
-                Node* second{ stack.top() };
+                std::unique_ptr<Node> second{ std::move(stack.top()) };
                 stack.pop();
 
-                stack.push(new Exponentiation{ second, first });
+                stack.push(std::make_unique<Exponentiation>(second.release(), first.release()));
             }
             else
             {
@@ -97,8 +98,14 @@ Expression::Expression(std::string const& infix_expression) : root{nullptr}
     {
         throw std::logic_error("Missing operator");
     }
-
-    root = stack.top();
+    else if (stack.size() == 0)
+    {
+        throw std::logic_error("Empty expression");
+    }
+    else
+    {
+        root = stack.top().release();
+    }
 }
 
 Expression::~Expression()
