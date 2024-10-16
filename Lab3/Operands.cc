@@ -15,18 +15,25 @@ double Real::evaluate() const
 std::string Real::prefix() const
 {
     std::stringstream ss{};
-    ss << std::fixed << std::setprecision(3) << value;
+    ss << std::fixed << std::setprecision(3) << evaluate();
     return ss.str();
 }
 
-std::string Real::infix() const
+std::string Integer::prefix() const
+{
+    std::stringstream ss{};
+    ss << evaluate();
+    return ss.str();
+}
+
+std::string Operand::infix() const
 {
     return prefix();
 }
 
-std::string Real::postfix() const
+std::string Operand::postfix() const
 {
-    return prefix();
+    return infix();
 }
 
 Integer::Integer(int value)
@@ -37,19 +44,4 @@ Integer::Integer(int value)
 double Integer::evaluate() const
 {
     return value;
-}
-
-std::string Integer::prefix() const
-{
-    return std::to_string(value);
-}
-
-std::string Integer::infix() const
-{
-    return prefix();
-}
-
-std::string Integer::postfix() const
-{
-    return infix();
 }

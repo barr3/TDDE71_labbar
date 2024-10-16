@@ -8,8 +8,8 @@ class Operand : public Node
   public:
     virtual double evaluate() const = 0;
     virtual std::string prefix() const = 0;
-    virtual std::string infix() const = 0;
-    virtual std::string postfix() const = 0;
+    std::string infix() const;
+    std::string postfix() const;
 };
 
 class Real : public Operand
@@ -21,8 +21,7 @@ class Real : public Operand
     Real(double value);
     double evaluate() const;
     std::string prefix() const;
-    std::string infix() const;
-    std::string postfix() const;
+
 };
 
 class Integer : public Operand
@@ -34,8 +33,6 @@ class Integer : public Operand
     Integer(int value);
     double evaluate() const;
     std::string prefix() const;
-    std::string infix() const;
-    std::string postfix() const;
 };
 
 #endif

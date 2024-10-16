@@ -213,6 +213,8 @@ TEST_CASE("Expression move constructor")
     CHECK(e2.evaluate() == 2);
 }
 
+
+
 #if 0 // Flytta ned denna rad för att aktivera nästa TEST_CASE
 
 #endif
