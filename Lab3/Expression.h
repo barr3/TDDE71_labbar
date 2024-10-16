@@ -11,6 +11,7 @@ class Expression
 
   public:
     Expression(std::string const& e);
+    ~Expression();
     Expression(Expression &&other); // Move constructor
     Expression& operator=(Expression &&other); // Move assignment operator
     Expression(Expression const&) = delete;

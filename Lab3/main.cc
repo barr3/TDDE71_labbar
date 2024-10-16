@@ -35,7 +35,7 @@ int main()
             {
                 expression = Expression{ line };
             }
-            catch (std::exception e)
+            catch (std::exception const& e)
             {
                 std::cout << "Invalid expression" << std::endl;
             }

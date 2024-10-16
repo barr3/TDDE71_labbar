@@ -8,6 +8,12 @@ Operator::Operator(Node* left, Node* right)
 {
 }
 
+Operator::~Operator()
+{
+    delete left;
+    delete right;
+}
+
 Addition::Addition(Node* left, Node* right)
   : Operator{ left, right }
 {

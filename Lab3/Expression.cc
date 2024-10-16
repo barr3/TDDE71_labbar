@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-Expression::Expression(std::string const& infix_expression)
+Expression::Expression(std::string const& infix_expression) : root{nullptr}
 {
     Postfix postfix_expression{ infix_expression };
     std::istringstream iss{ postfix_expression.to_string() };
@@ -34,7 +34,7 @@ Expression::Expression(std::string const& infix_expression)
                 stack.push(new Real{ d });
             }
         }
-        catch (std::exception e)
+        catch (std::exception const& e)
         {
             if (stack.size() < 2)
             {
@@ -99,6 +99,11 @@ Expression::Expression(std::string const& infix_expression)
     }
 
     root = stack.top();
+}
+
+Expression::~Expression()
+{
+    delete root;
 }
 
 // Move constructor

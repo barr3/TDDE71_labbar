@@ -29,10 +29,6 @@ TEST_CASE("Addition")
     CHECK(plusrl->postfix() == "2.720 3.140 +");
 }
 
-// If catch report 0.42 != 0.42 you are likely to have a small
-// rounding error in some invisible decimal place. In such case you
-// can compare if the difference is small enough to consider two
-// doubles equal anyway.
 bool compare_equal(double a, double b)
 {
     return std::abs(a - b) <= std::numeric_limits<double>::epsilon();

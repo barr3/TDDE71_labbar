@@ -13,8 +13,9 @@ class Operator : public Node
 
   public:
     Operator(Node* left, Node* right);
-    // Operator(Operator const&) = delete;
-    // Operator& operator=(Operator const&) = delete;
+    ~Operator();
+    Operator(Operator const&) = delete;
+    Operator& operator=(Operator const&) = delete;
 
     virtual double evaluate() const = 0;
     virtual std::string prefix() const;
