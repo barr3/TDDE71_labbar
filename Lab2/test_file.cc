@@ -1,9 +1,6 @@
 #include <sstream>
 #include "catch.hpp"
 #include "List.h"
-#include <limits>
-#include <cmath>
-#include <iostream>
 
 using namespace std;
 

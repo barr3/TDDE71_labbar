@@ -182,10 +182,11 @@ std::string List::to_string() const
     Node* current { head };
     ss << "[";
 
-    for (unsigned int i { 0 }; i < length(); i++)
+    unsigned int len = length();
+    for (unsigned int i { 0 }; i < len; i++)
     {
         ss << current->data;
-        if (i < length() - 1)
+        if (i < len - 1)
         {
             ss << ", ";
         }
