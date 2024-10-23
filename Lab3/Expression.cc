@@ -3,13 +3,16 @@
 #include "Operators.h"
 #include "postfix.h"
 #include <cmath>
+#include <memory>
 #include <sstream>
 #include <stack>
 #include <stdexcept>
 #include <string>
-#include <memory>
 
-Expression::Expression(std::string const& infix_expression) : root{nullptr}
+#include <iostream>
+
+Expression::Expression(std::string const& infix_expression)
+  : root{ nullptr }
 {
     Postfix postfix_expression{ infix_expression };
     std::istringstream iss{ postfix_expression.to_string() };
@@ -26,13 +29,11 @@ Expression::Expression(std::string const& infix_expression) : root{nullptr}
             {
                 // Is integer
                 stack.push(std::make_unique<Integer>(static_cast<int>(d)));
-                // stack.push(new Integer{ static_cast<int>(d) });
             }
             else
             {
                 // Is real
                 stack.push(std::make_unique<Real>(d));
-                // stack.push(new Real{ d });
             }
         }
         catch (std::exception const& e)
@@ -42,50 +43,35 @@ Expression::Expression(std::string const& infix_expression) : root{nullptr}
                 throw std::logic_error("Missing operands for operator");
             }
 
+            std::unique_ptr<Node> first{ std::move(stack.top()) };
+            stack.pop();
+            std::unique_ptr<Node> second{ std::move(stack.top()) };
+            stack.pop();
+
             if (current_element == "+")
             {
-                std::unique_ptr<Node> first{ std::move(stack.top()) };
-                stack.pop();
-                std::unique_ptr<Node> second{ std::move(stack.top()) };
-                stack.pop();
-
-                stack.push(std::make_unique<Addition>(second.release(), first.release()));
+                stack.push(std::make_unique<Addition>(second.release(),
+                                                      first.release()));
             }
             else if (current_element == "-")
             {
-                std::unique_ptr<Node> first{ std::move(stack.top()) };
-                stack.pop();
-                std::unique_ptr<Node> second{ std::move(stack.top()) };
-                stack.pop();
-
-                stack.push(std::make_unique<Subtraction>(second.release(), first.release()));
+                stack.push(std::make_unique<Subtraction>(second.release(),
+                                                         first.release()));
             }
             else if (current_element == "*")
             {
-                std::unique_ptr<Node> first{ std::move(stack.top()) };
-                stack.pop();
-                std::unique_ptr<Node> second{ std::move(stack.top()) };
-                stack.pop();
-
-                stack.push(std::make_unique<Multiplication>(second.release(), first.release()));
+                stack.push(std::make_unique<Multiplication>(second.release(),
+                                                            first.release()));
             }
             else if (current_element == "/")
             {
-                std::unique_ptr<Node> first{ std::move(stack.top()) };
-                stack.pop();
-                std::unique_ptr<Node> second{ std::move(stack.top()) };
-                stack.pop();
-
-                stack.push(std::make_unique<Division>(second.release(), first.release()));
+                stack.push(std::make_unique<Division>(second.release(),
+                                                      first.release()));
             }
             else if (current_element == "^")
             {
-                std::unique_ptr<Node> first{ std::move(stack.top()) };
-                stack.pop();
-                std::unique_ptr<Node> second{ std::move(stack.top()) };
-                stack.pop();
-
-                stack.push(std::make_unique<Exponentiation>(second.release(), first.release()));
+                stack.push(std::make_unique<Exponentiation>(second.release(),
+                                                            first.release()));
             }
             else
             {
@@ -114,14 +100,14 @@ Expression::~Expression()
 }
 
 // Move constructor
-Expression::Expression(Expression &&other)
-    : root(other.root)
+Expression::Expression(Expression&& other)
+  : root(other.root)
 {
     other.root = nullptr;
 }
 
 // Move assignment operator
-Expression& Expression::operator=(Expression &&other)
+Expression& Expression::operator=(Expression&& other)
 {
     std::swap(other.root, root);
     return *this;
@@ -134,7 +120,7 @@ double Expression::evaluate() const
 
 std::string Expression::to_string() const
 {
-    return infix();    
+    return infix();
 }
 
 std::string Expression::prefix() const

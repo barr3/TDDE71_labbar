@@ -192,14 +192,14 @@ TEST_CASE("Expression errors")
 {
     CHECK_THROWS(Expression{ "3 +" }); // Missing operand
     CHECK_THROWS(Expression{ "4 3" }); // Missing operator
-    CHECK_THROWS(Expression{ "" }); // Empty expression
+    CHECK_THROWS(Expression{ "" });    // Empty expression
 }
 
 TEST_CASE("Expression massignment operator")
 {
-    Expression e1 { "1 + 1" };
+    Expression e1{ "1 + 1" };
     Expression e2 = std::move(e1);
-    
+
     // e1.evaluate(); // Segmentation violation because e1 was moved
     CHECK(e2.evaluate() == 2);
 }
@@ -212,8 +212,6 @@ TEST_CASE("Expression move constructor")
     // e1.evaluate(); // Segmentation violation because e1 was moved
     CHECK(e2.evaluate() == 2);
 }
-
-
 
 #if 0 // Flytta ned denna rad för att aktivera nästa TEST_CASE
 

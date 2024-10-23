@@ -14,21 +14,6 @@ Operator::~Operator()
     delete right;
 }
 
-Addition::Addition(Node* left, Node* right)
-  : Operator{ left, right }
-{
-}
-
-double Addition::evaluate() const
-{
-    return left->evaluate() + right->evaluate();
-}
-
-char Addition::get_symbol() const
-{
-    return '+';
-}
-
 std::string Operator::prefix() const
 {
     std::stringstream ss{};
@@ -51,9 +36,14 @@ std::string Operator::postfix() const
     return ss.str();
 }
 
-Subtraction::Subtraction(Node* left, Node* right)
-  : Operator{ left, right }
+double Addition::evaluate() const
 {
+    return left->evaluate() + right->evaluate();
+}
+
+char Addition::get_symbol() const
+{
+    return '+';
 }
 
 double Subtraction::evaluate() const
@@ -66,11 +56,6 @@ char Subtraction::get_symbol() const
     return '-';
 }
 
-Multiplication::Multiplication(Node* left, Node* right)
-  : Operator{ left, right }
-{
-}
-
 double Multiplication::evaluate() const
 {
     return left->evaluate() * right->evaluate();
@@ -79,11 +64,6 @@ double Multiplication::evaluate() const
 char Multiplication::get_symbol() const
 {
     return '*';
-}
-
-Division::Division(Node* left, Node* right)
-  : Operator{ left, right }
-{
 }
 
 double Division::evaluate() const
@@ -100,11 +80,6 @@ double Division::evaluate() const
 char Division::get_symbol() const
 {
     return '/';
-}
-
-Exponentiation::Exponentiation(Node* left, Node* right)
-  : Operator{ left, right }
-{
 }
 
 double Exponentiation::evaluate() const

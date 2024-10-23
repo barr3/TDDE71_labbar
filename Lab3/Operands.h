@@ -21,7 +21,6 @@ class Real : public Operand
     Real(double value);
     double evaluate() const;
     std::string prefix() const;
-
 };
 
 class Integer : public Operand

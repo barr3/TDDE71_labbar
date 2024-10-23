@@ -26,43 +26,44 @@ class Operator : public Node
 class Addition : public Operator
 {
   public:
-    Addition(Node* left, Node* right);
-    double evaluate() const;
+    using Operator::Operator;
 
+    double evaluate() const;
     char get_symbol() const;
 };
 
 class Subtraction : public Operator
 {
   public:
-    Subtraction(Node* left, Node* right);
-    double evaluate() const;
+    using Operator::Operator;
 
+    double evaluate() const;
     char get_symbol() const;
 };
 
 class Multiplication : public Operator
 {
   public:
-    Multiplication(Node* left, Node* right);
-    double evaluate() const;
+    using Operator::Operator;
 
+    double evaluate() const;
     char get_symbol() const;
 };
 
 class Division : public Operator
 {
   public:
-    Division(Node* left, Node* right);
-    double evaluate() const;
+    using Operator::Operator;
 
+    double evaluate() const;
     char get_symbol() const;
 };
 
 class Exponentiation : public Operator
 {
   public:
-    Exponentiation(Node* left, Node* right);
+    using Operator::Operator;
+
     double evaluate() const;
     char get_symbol() const;
 };

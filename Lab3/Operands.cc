@@ -2,6 +2,16 @@
 #include <iomanip>
 #include <sstream>
 
+std::string Operand::infix() const
+{
+    return prefix();
+}
+
+std::string Operand::postfix() const
+{
+    return infix();
+}
+
 Real::Real(double value)
   : value{ value }
 {
@@ -24,16 +34,6 @@ std::string Integer::prefix() const
     std::stringstream ss{};
     ss << evaluate();
     return ss.str();
-}
-
-std::string Operand::infix() const
-{
-    return prefix();
-}
-
-std::string Operand::postfix() const
-{
-    return infix();
 }
 
 Integer::Integer(int value)
