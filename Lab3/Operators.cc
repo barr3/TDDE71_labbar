@@ -36,6 +36,11 @@ std::string Operator::postfix() const
     return ss.str();
 }
 
+Addition::Addition(Node* left, Node* right)
+  : Operator{ left, right }
+{
+}
+
 double Addition::evaluate() const
 {
     return left->evaluate() + right->evaluate();
@@ -44,6 +49,11 @@ double Addition::evaluate() const
 char Addition::get_symbol() const
 {
     return '+';
+}
+
+Subtraction::Subtraction(Node* left, Node* right)
+  : Operator{ left, right }
+{
 }
 
 double Subtraction::evaluate() const
@@ -56,6 +66,11 @@ char Subtraction::get_symbol() const
     return '-';
 }
 
+Multiplication::Multiplication(Node* left, Node* right)
+  : Operator{ left, right }
+{
+}
+
 double Multiplication::evaluate() const
 {
     return left->evaluate() * right->evaluate();
@@ -66,14 +81,18 @@ char Multiplication::get_symbol() const
     return '*';
 }
 
-double Division::evaluate() const
+Division::Division(Node* left, Node* right)
+  : Operator{ left, right }
 {
     double right_value{ right->evaluate() };
     if (fmod(right_value, 1.0) == 0.0 && static_cast<int>(right_value) == 0)
     {
         throw std::logic_error("Division by zero");
     }
+}
 
+double Division::evaluate() const
+{
     return left->evaluate() / right->evaluate();
 }
 
@@ -82,7 +101,8 @@ char Division::get_symbol() const
     return '/';
 }
 
-double Exponentiation::evaluate() const
+Exponentiation::Exponentiation(Node* left, Node* right)
+  : Operator{ left, right }
 {
     double left_value{ left->evaluate() };
     double right_value{ right->evaluate() };
@@ -97,7 +117,11 @@ double Exponentiation::evaluate() const
         throw std::logic_error("Invalid exponentiation");
     }
 
-    return pow(left_value, right_value);
+}
+
+double Exponentiation::evaluate() const
+{
+    return pow(left->evaluate(), right->evaluate());
 }
 
 char Exponentiation::get_symbol() const

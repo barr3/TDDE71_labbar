@@ -26,6 +26,7 @@ class Operator : public Node
 class Addition : public Operator
 {
   public:
+    Addition(Node* left, Node* right);
     using Operator::Operator;
 
     double evaluate() const;
@@ -35,6 +36,7 @@ class Addition : public Operator
 class Subtraction : public Operator
 {
   public:
+    Subtraction(Node* left, Node* right);
     using Operator::Operator;
 
     double evaluate() const;
@@ -44,6 +46,7 @@ class Subtraction : public Operator
 class Multiplication : public Operator
 {
   public:
+    Multiplication(Node* left, Node* right);
     using Operator::Operator;
 
     double evaluate() const;
@@ -53,6 +56,7 @@ class Multiplication : public Operator
 class Division : public Operator
 {
   public:
+    Division(Node* left, Node* right);
     using Operator::Operator;
 
     double evaluate() const;
@@ -62,6 +66,7 @@ class Division : public Operator
 class Exponentiation : public Operator
 {
   public:
+    Exponentiation(Node* left, Node* right);
     using Operator::Operator;
 
     double evaluate() const;

@@ -12,15 +12,17 @@ int main()
     {
         if (line == ":calc")
         {
-            try 
-            {
-                double result{ expression.evaluate() };
-                std::cout << "= " << result << std::endl;
-            }
-            catch (const std::exception& e)
-            {
-                std::cout << "Undefined expression" << std::endl;
-            }
+            double result{ expression.evaluate() };
+            std::cout << "= " << result << std::endl;
+            // try 
+            // {
+            //     double result{ expression.evaluate() };
+            //     std::cout << "= " << result << std::endl;
+            // }
+            // catch (const std::exception& e)
+            // {
+            //     std::cout << "Undefined expression" << std::endl;
+            // }
         }
         else if (line == ":prefix")
         {
@@ -82,7 +84,7 @@ int main()
             }
             catch (std::exception const& e)
             {
-                std::cout << "Invalid expression" << std::endl;
+                std::cout << "Invalid expression due to: " << e.what() << std::endl;
             }
         }
 
